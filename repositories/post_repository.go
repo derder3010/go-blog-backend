@@ -14,12 +14,20 @@ type PostRepository struct {
     collection *mongo.Collection
 }
 
+// NewPostRepository returns a new instance of PostRepository.
+//
+// The PostRepository is used to interact with the "posts" collection in the MongoDB
+// database.
 func NewPostRepository(db *mongo.Database) *PostRepository {
     return &PostRepository{
         collection: db.Collection("posts"),
     }
 }
 
+// Create creates a new post in the "posts" collection in the MongoDB database.
+//
+// The returned error will be non-nil if any error occurred during the create
+// process.
 func (r *PostRepository) Create(post *models.Post) error {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
@@ -33,6 +41,10 @@ func (r *PostRepository) Create(post *models.Post) error {
     return nil
 }
 
+// GetByID returns a post by the given ID.
+//
+// The returned error will be non-nil if any error occurred during the get
+// process.
 func (r *PostRepository) GetByID(id string) (*models.Post, error) {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
@@ -51,6 +63,15 @@ func (r *PostRepository) GetByID(id string) (*models.Post, error) {
     return &post, nil
 }
 
+// Update updates the post with the given ID in the "posts" collection in the
+// MongoDB database.
+//
+// The updates parameter is a map of key-value pairs that should be updated in
+// the post document. The key is the field name and the value is the new value
+// for that field.
+//
+// The returned error will be non-nil if any error occurred during the update
+// process.
 func (r *PostRepository) Update(id string, updates map[string]interface{}) error {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
@@ -68,6 +89,11 @@ func (r *PostRepository) Update(id string, updates map[string]interface{}) error
     return err
 }
 
+// Delete deletes the post with the given ID from the "posts" collection in the
+// MongoDB database.
+//
+// The returned error will be non-nil if any error occurred during the delete
+// process.
 func (r *PostRepository) Delete(id string) error {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
@@ -81,6 +107,14 @@ func (r *PostRepository) Delete(id string) error {
     return err
 }
 
+// List returns a slice of posts, sorted by created_at in descending order,
+// limited to the given number of items, and starting from the given page.
+//
+// The page and limit parameters are 1-indexed, so the first page should have
+// page = 1 and limit = 10 to get the first 10 results.
+//
+// The returned error will be non-nil if any error occurred during the find
+// process.
 func (r *PostRepository) List(page, limit int) ([]*models.Post, error) {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
@@ -106,6 +140,10 @@ func (r *PostRepository) List(page, limit int) ([]*models.Post, error) {
     return posts, nil
 }
 
+// GetByAuthor returns a slice of posts, filtered by the given author ID.
+//
+// The returned error will be non-nil if any error occurred during the find
+// process.
 func (r *PostRepository) GetByAuthor(authorID string) ([]*models.Post, error) {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()

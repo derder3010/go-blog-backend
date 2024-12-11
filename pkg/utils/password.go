@@ -9,6 +9,9 @@ type PasswordUtils struct {
     cost int
 }
 
+// NewPasswordUtils returns a new instance of PasswordUtils with the given cost.
+//
+// If cost is 0, it defaults to bcrypt.DefaultCost.
 func NewPasswordUtils(cost int) *PasswordUtils {
     if cost == 0 {
         cost = bcrypt.DefaultCost

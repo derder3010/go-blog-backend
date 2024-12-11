@@ -7,6 +7,10 @@ import (
     "strings"
 )
 
+// AuthMiddleware is a middleware that checks if the Authorization header is valid
+// and contains a Bearer token. If the token is valid, it extracts the user_id from
+// the token and sets it in the context as "user_id". If the token is invalid or
+// missing, it returns a 401 status code with an error message.
 func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
     return func(c *gin.Context) {
         authHeader := c.GetHeader("Authorization")

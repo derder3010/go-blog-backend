@@ -16,6 +16,10 @@ type Config struct {
     R2PublicURL     string // Đổi tên từ PublicURL thành R2PublicURL
 }
 
+// LoadConfig loads configuration from environment variables. It returns a Config
+// object with the loaded values. If there is an error loading the configuration
+// (for example, if the environment variables are not set), it returns nil and
+// the error.
 func LoadConfig() (*Config, error) {
     err := godotenv.Load()
     if err != nil {

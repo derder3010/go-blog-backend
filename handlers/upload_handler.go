@@ -20,12 +20,22 @@ type UploadHandler struct {
     uploadService UploadService
 }
 
+// NewUploadHandler creates a new instance of UploadHandler with the provided UploadService.
+// This function takes an UploadService as a parameter and returns a pointer to an UploadHandler.
+// The created UploadHandler instance can be used to handle image upload requests.
 func NewUploadHandler(uploadService UploadService) *UploadHandler {
     return &UploadHandler{
         uploadService: uploadService,
     }
 }
 
+// UploadImage handles image upload requests.
+//
+// The request body should contain a file under the field name "image".
+// The response will be a JSON object with the following fields:
+//   - status: The status of the request. Will be "success" on success, or "error" on error.
+//   - message: A human-readable message describing the result of the request.
+//   - data: A JSON object with a single field "url", which is the URL of the uploaded image.
 func (h *UploadHandler) UploadImage(c *gin.Context) {
     file, err := c.FormFile("image")
     if err != nil {

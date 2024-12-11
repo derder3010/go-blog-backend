@@ -51,6 +51,9 @@ func main() {
     if err != nil {
         log.Fatal("Cannot ping MongoDB:", err)
     }
+    if err == nil {
+        log.Println("Successfully pinged MongoDB")
+    }
 
     db := mongoClient.Database(cfg.DatabaseName)
 
@@ -64,6 +67,9 @@ func main() {
     })
     if err != nil {
         log.Fatal("Cannot create R2 client:", err)
+    }
+    if err == nil {
+        log.Println("Successfully created R2 client")
     }
 
     // Setup repositories

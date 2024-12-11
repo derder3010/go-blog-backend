@@ -27,6 +27,15 @@ type R2Config struct {
     PublicURL       string
 }
 
+// NewR2Client creates a new R2Client instance with the given config.
+//
+// This function uses the given config to create an AWS client, which is then
+// used to interact with the R2 bucket. The client is configured to use the
+// given account ID, access key ID, and access key secret to authenticate
+// requests. The given bucket name and public URL are used when uploading and
+// deleting files.
+//
+// The returned R2Client is not thread-safe.
 func NewR2Client(cfg R2Config) (*R2Client, error) {
     r2Resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
         return aws.Endpoint{
@@ -64,6 +73,11 @@ type FileUpload struct {
     URL         string
 }
 
+// UploadFile uploads the provided file to the Cloudflare R2 bucket.
+// It reads the file content, generates a unique filename, and sets
+// the appropriate content type and cache control headers. The uploaded
+// file's metadata is returned upon successful upload. Returns an error
+// if the file could not be read or uploaded.
 func (c *R2Client) UploadFile(file *multipart.FileHeader) (*FileUpload, error) {
     src, err := file.Open()
     if err != nil {
@@ -103,6 +117,9 @@ func (c *R2Client) UploadFile(file *multipart.FileHeader) (*FileUpload, error) {
     }, nil
 }
 
+// DeleteFile deletes the file with the given filename from the Cloudflare R2
+// bucket. The returned error will be non-nil if any error occurred during the
+// delete process.
 func (c *R2Client) DeleteFile(filename string) error {
     input := &s3.DeleteObjectInput{
         Bucket: aws.String(c.bucketName),

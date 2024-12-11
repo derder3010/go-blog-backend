@@ -17,6 +17,8 @@ type JWTClaims struct {
     jwt.RegisteredClaims
 }
 
+// NewJWTUtils returns a new JWTUtils instance with the given secret key and expiration duration.
+// The secret key is used to sign the JWT token, and the expiration duration is used to set the "exp" claim in the JWT token.
 func NewJWTUtils(secretKey string, expires time.Duration) *JWTUtils {
     return &JWTUtils{
         secretKey: []byte(secretKey),

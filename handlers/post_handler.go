@@ -12,6 +12,7 @@ type PostHandler struct {
     postService PostService
 }
 
+// NewPostHandler returns a new PostHandler instance, given a PostService.
 func NewPostHandler(postService PostService) *PostHandler {
     return &PostHandler{
         postService: postService,
@@ -24,6 +25,17 @@ type CreatePostRequest struct {
     ImageURL string `json:"image_url,omitempty"`
 }
 
+// Create creates a new post in the "posts" collection in the MongoDB database.
+//
+// The request body should contain a JSON object with the following fields:
+//   - title: The title of the post.
+//   - content: The content of the post.
+//   - image_url: An optional URL to an image associated with the post.
+//
+// The response will be a JSON object with the following fields:
+//   - status: The status of the request. Will be "success" on success, or "error" on error.
+//   - message: A human-readable message describing the result of the request.
+//   - data: The newly created Post instance, or nil if an error occurred.
 func (h *PostHandler) Create(c *gin.Context) {
     var req CreatePostRequest
     if err := c.ShouldBindJSON(&req); err != nil {
@@ -56,6 +68,14 @@ func (h *PostHandler) Create(c *gin.Context) {
     })
 }
 
+// Get retrieves a post by its ID from the "posts" collection.
+//
+// The ID should be provided as a URL parameter.
+//
+// The response will be a JSON object with the following fields:
+//   - status: The status of the request. Will be "success" on success, or "error" on error.
+//   - message: A human-readable message describing the result of the request, if an error occurs.
+//   - data: The requested Post instance on success, or nil if not found.
 func (h *PostHandler) Get(c *gin.Context) {
     postID := c.Param("id")
 
@@ -80,6 +100,16 @@ type UpdatePostRequest struct {
     ImageURL string `json:"image_url,omitempty"`
 }
 
+// Update updates the fields of the post with the given ID in the "posts" collection.
+//
+// The request body should contain a JSON object with any of the following fields:
+//   - title: The new title for the post.
+//   - content: The new content for the post.
+//   - image_url: The new image URL for the post.
+//
+// The response will be a JSON object with the following fields:
+//   - status: The status of the request. Will be "success" on success, or "error" on error.
+//   - message: A human-readable message describing the result of the request.
 func (h *PostHandler) Update(c *gin.Context) {
     postID := c.Param("id")
     _, _ = c.Get("user_id")
@@ -118,6 +148,14 @@ func (h *PostHandler) Update(c *gin.Context) {
     })
 }
 
+// Delete deletes the post with the given ID from the "posts" collection in the
+// MongoDB database.
+//
+// The request body should contain no data.
+//
+// The response will be a JSON object with the following fields:
+//   - status: The status of the request. Will be "success" on success, or "error" on error.
+//   - message: A human-readable message describing the result of the request.
 func (h *PostHandler) Delete(c *gin.Context) {
     postID := c.Param("id")
     _, _ = c.Get("user_id")
@@ -136,6 +174,16 @@ func (h *PostHandler) Delete(c *gin.Context) {
     })
 }
 
+// List retrieves a list of posts from the "posts" collection.
+//
+// The request parameters should include:
+//   - page: The page number to retrieve. Defaults to 1 if not specified.
+//   - limit: The number of posts per page. Defaults to 10 if not specified.
+//
+// The response will be a JSON object with the following fields:
+//   - status: The status of the request. Will be "success" on success, or "error" on error.
+//   - message: A human-readable message describing the result of the request, if an error occurs.
+//   - data: A slice of Post instances on success.
 func (h *PostHandler) List(c *gin.Context) {
     page := 1
     limit := 10

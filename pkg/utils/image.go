@@ -16,6 +16,12 @@ type ImageProcessor struct {
     quality   int
 }
 
+// NewImageProcessor returns a new instance of ImageProcessor.
+//
+// The returned ImageProcessor can be used to resize and optimize images.
+// The maxWidth and maxHeight parameters are the maximum width and height
+// of the processed image, and the quality parameter is the quality of
+// the compressed image (0-100).
 func NewImageProcessor(maxWidth, maxHeight uint, quality int) *ImageProcessor {
     return &ImageProcessor{
         maxWidth:  maxWidth,

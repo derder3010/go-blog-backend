@@ -21,6 +21,13 @@ type UserService struct {
     jwtSecret string
 }
 
+// NewUserService creates a new UserService instance with the given UserRepository and JWT secret.
+//
+// Parameters:
+//   - repo: The UserRepository interface used for interacting with the user data storage.
+//   - jwtSecret: The secret key used for signing JWT tokens.
+//
+// Returns a pointer to a UserService instance.
 func NewUserService(repo UserRepository, jwtSecret string) *UserService {
     return &UserService{
         repo:      repo,
@@ -28,6 +35,16 @@ func NewUserService(repo UserRepository, jwtSecret string) *UserService {
     }
 }
 
+// Register creates a new user in the "users" collection in the MongoDB database.
+//
+// If the email address is already registered, an error will be returned.
+//
+// Parameters:
+//   - username: The username for the new user.
+//   - email: The email address for the new user.
+//   - password: The password for the new user.
+//
+// Returns a pointer to the newly created User instance, or an error if any error occurred during the registration process.
 func (s *UserService) Register(username, email, password string) (*models.User, error) {
     // Check if user already exists
     existing, err := s.repo.GetByEmail(email)
@@ -56,6 +73,13 @@ func (s *UserService) Register(username, email, password string) (*models.User, 
     return user, nil
 }
 
+// Login authenticates a user by their email and password and returns a JWT token.
+//
+// Parameters:
+//   - email: The email address to authenticate.
+//   - password: The password to authenticate.
+//
+// Returns a JWT token string if the authentication is successful, or an error if any error occurred during the authentication process.
 func (s *UserService) Login(email, password string) (string, error) {
     user, err := s.repo.GetByEmail(email)
     if err != nil {
@@ -81,6 +105,13 @@ func (s *UserService) Login(email, password string) (string, error) {
     return tokenString, nil
 }
 
+// Update updates the fields of the user with the given ID in the "users" collection.
+//
+// The updates parameter is a map of key-value pairs where the key is the field name
+// and the value is the new value for that field. The updated_at field is automatically
+// set to the current time.
+//
+// The returned error will be non-nil if any error occurred during the update process.
 func (s *UserService) Update(userID string, updates map[string]interface{}) error {
     if password, ok := updates["password"].(string); ok {
         hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -94,10 +125,19 @@ func (s *UserService) Update(userID string, updates map[string]interface{}) erro
     return s.repo.Update(userID, updates)
 }
 
+// Delete deletes the user with the given ID from the "users" collection in the
+// MongoDB database.
+//
+// The returned error will be non-nil if any error occurred during the delete
+// process.
 func (s *UserService) Delete(userID string) error {
     return s.repo.Delete(userID)
 }
 
+// GetByID returns a user by the given ID.
+//
+// The returned error will be non-nil if any error occurred during the get
+// process.
 func (s *UserService) GetByID(userID string) (*models.User, error) {
     return s.repo.GetByID(userID)
 }
