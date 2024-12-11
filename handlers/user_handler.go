@@ -187,3 +187,21 @@ func (h *UserHandler) Delete(c *gin.Context) {
         Message: "User deleted successfully",
     })
 }
+
+func (h *UserHandler) GetMe(c *gin.Context) {
+    userID, _ := c.Get("user_id")
+    
+    user, err := h.userService.GetByID(userID.(string))
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, Response{
+            Status:  "error",
+            Message: "Failed to get user information",
+        })
+        return
+    }
+
+    c.JSON(http.StatusOK, Response{
+        Status: "success",
+        Data:   user,
+    })
+}

@@ -119,6 +119,7 @@ func main() {
             // User routes
             protected.PUT("/user", userHandler.Update)
             protected.DELETE("/user", userHandler.Delete)
+            protected.GET("/user/me", userHandler.GetMe)
 
             // Post routes
             protected.POST("/posts", postHandler.Create)
